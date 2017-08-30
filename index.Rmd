@@ -1,0 +1,26 @@
+---
+title: "SQL"
+output: html_document
+---
+
+#level one header
+##level two header
+###level 3 header 
+
+For paragraphs actually just type 
+
+lists use asterisk
+
+* 1
+* 2
+* 3
+* 4
+
+Column 1 | Column 2 
+---------|------------
+Philies | National
+Yankees | American
+Red Sox | American
+
+
+<img src="krabby.jpg" width="300" />
