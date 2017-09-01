@@ -3,24 +3,20 @@ title: "SQL"
 output: html_document
 ---
 
-#level one header
-##level two header
-###level 3 header 
+## Filtering Rows and Columns
 
-For paragraphs actually just type 
+You can filter in SQL columns by SELECT and rows by WHERE. Example from the Lahman baseball database, download it and sqldf package first. 
 
-lists use asterisk
+```{r message=FALSE, warning=FALSE}
+library(Lahman)
+library(sqldf)
+```
 
-* 1
-* 2
-* 3
-* 4
+Next, enter this code to see see hr totals for 1927 Yankees. Instead of a massive 100,000 entry list, we could write: 
 
-Column 1 | Column 2 
----------|------------
-Philies | National
-Yankees | American
-Red Sox | American
+```{r}
+query<-"SELECT playerID,teamID,yearID,HR FROM Batting
+WHERE teamID='NYA' and yearID=1927"
+sqldf(query)
+```
 
-
-<img src="krabby.jpg" width="300" />
