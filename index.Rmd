@@ -1,5 +1,5 @@
 ---
-title: "SQL"
+title: "SQL and beyond the infinite"
 output: html_document
 ---
 
@@ -20,3 +20,24 @@ WHERE teamID='NYA' and yearID=1927"
 sqldf(query)
 ```
 
+Going further, heres an example of Yankees with over 40 home runs.
+
+```{r}
+query<-"SELECT playerID,teamID,yearID,HR FROM Batting
+WHERE teamID='NYA' and HR>40"
+sqldf(query)
+```
+Next we have Yankees with more than 40 home runs AND less and 60 strikeouts. A much more difficult feat. 
+```{R}
+query<-"SELECT playerID,teamID,yearID,HR FROM Batting
+WHERE teamID='NYA' and HR>40 and SO<60"
+sqldf(query)
+```
+Finally we come to Phillies with more than 30 home runs throughout the entire 70's. 
+```{R}
+query<-"SELECT playerID,teamID,yearID,HR FROM Batting
+WHERE teamID='PHI' and HR>30 and yearID>1970 and yearID<1979"
+sqldf(query)
+```
+
+Multiple pieces of data can always be linked with 'and'. Also don't forget to HIGHLIGHT WHAT YOU'RE RUNNING.
