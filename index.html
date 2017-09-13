@@ -155,7 +155,7 @@ sqldf(query)</code></pre>
 ## 23 shockur01    NYA   1927  0
 ## 24 thomamy01    NYA   1927  0
 ## 25  weraju01    NYA   1927  1</code></pre>
-<p>Going further, heres an example of the Yankees with over 40 home runs.</p>
+<p>Going further, heres an example of Yankees with over 40 home runs.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,teamID,yearID,HR FROM Batting
 WHERE teamID='NYA' and HR&gt;40&quot;
 sqldf(query)</code></pre>
@@ -190,9 +190,9 @@ sqldf(query)</code></pre>
 ## 28 grandcu01    NYA   2011 41
 ## 29 grandcu01    NYA   2012 43</code></pre>
 <p>Next we have Yankees with more than 40 home runs AND less and 60 strikeouts. A much more difficult feat.</p>
-<pre class="r"><code>query&lt;-&quot;SELECT playerID,teamID,yearID,HR FROM Batting
+<pre class="r"><code>query1&lt;-&quot;SELECT playerID,teamID,yearID,HR FROM Batting
 WHERE teamID='NYA' and HR&gt;40 and SO&lt;60&quot;
-sqldf(query)</code></pre>
+sqldf(query1)</code></pre>
 <pre><code>##    playerID teamID yearID HR
 ## 1 gehrilo01    NYA   1931 46
 ## 2  ruthba01    NYA   1931 46
@@ -200,9 +200,9 @@ sqldf(query)</code></pre>
 ## 4 gehrilo01    NYA   1936 49
 ## 5 dimagjo01    NYA   1937 46</code></pre>
 <p>Finally we come to Phillies with more than 30 home runs throughout the entire 70’s.</p>
-<pre class="r"><code>query&lt;-&quot;SELECT playerID,teamID,yearID,HR FROM Batting
+<pre class="r"><code>query2&lt;-&quot;SELECT playerID,teamID,yearID,HR FROM Batting
 WHERE teamID='PHI' and HR&gt;30 and yearID&gt;1970 and yearID&lt;1979&quot;
-sqldf(query)</code></pre>
+sqldf(query2)</code></pre>
 <pre><code>##    playerID teamID yearID HR
 ## 1 johnsde01    PHI   1971 34
 ## 2 schmimi01    PHI   1974 36
@@ -213,6 +213,155 @@ sqldf(query)</code></pre>
 ## 7 schmimi01    PHI   1977 38
 ## 8 luzingr01    PHI   1978 35</code></pre>
 <p>Multiple pieces of data can always be linked with ‘and’. Also don’t forget to HIGHLIGHT WHAT YOU’RE RUNNING.</p>
+</div>
+<div id="order-by" class="section level2">
+<h2>Order By</h2>
+<p>The function, ORDER BY, can greatly refine oure query’s, let’s take a look.</p>
+<pre class="r"><code>query3&lt;-&quot;SELECT playerID,yearID,HR 
+FROM Batting
+WHERE HR&gt;50
+ORDER BY HR DESC&quot;
+
+sqldf(query3)</code></pre>
+<pre><code>##     playerID yearID HR
+## 1  bondsba01   2001 73
+## 2  mcgwima01   1998 70
+## 3   sosasa01   1998 66
+## 4  mcgwima01   1999 65
+## 5   sosasa01   2001 64
+## 6   sosasa01   1999 63
+## 7  marisro01   1961 61
+## 8   ruthba01   1927 60
+## 9   ruthba01   1921 59
+## 10  foxxji01   1932 58
+## 11 greenha01   1938 58
+## 12 howarry01   2006 58
+## 13 gonzalu01   2001 57
+## 14 rodrial01   2002 57
+## 15 wilsoha01   1930 56
+## 16 griffke02   1997 56
+## 17 griffke02   1998 56
+## 18  ruthba01   1920 54
+## 19  ruthba01   1928 54
+## 20 kinerra01   1949 54
+## 21 mantlmi01   1961 54
+## 22 ortizda01   2006 54
+## 23 rodrial01   2007 54
+## 24 bautijo02   2010 54
+## 25 davisch02   2013 53
+## 26 mantlmi01   1956 52
+## 27  mayswi01   1965 52
+## 28 fostege01   1977 52
+## 29 mcgwima01   1996 52
+## 30 rodrial01   2001 52
+## 31 thomeji01   2002 52
+## 32 kinerra01   1947 51
+## 33  mizejo01   1947 51
+## 34  mayswi01   1955 51
+## 35 fieldce01   1990 51
+## 36 jonesan01   2005 51</code></pre>
+</div>
+<div id="aggregation" class="section level2">
+<h2>Aggregation</h2>
+<p>Query’s can be refined even further through aggregation. Sum’s are added to the SELECT line and we introduce the GROUP BY function.</p>
+<pre class="r"><code>query4&lt;-&quot;SELECT playerID,yearID,avg(HR)FROM Batting
+GROUP BY playerID
+HAVING avg(HR)&gt;30
+ORDER BY avg(HR) DESC&quot;
+
+sqldf(query4)</code></pre>
+<pre><code>##     playerID yearID  avg(HR)
+## 1  pujolal01   2016 36.93750
+## 2  bondsba01   2007 34.63636
+## 3  mcgwima01   2001 34.29412
+## 4  kinerra01   1955 33.54545
+## 5  aaronha01   1976 32.82609
+## 6  bryankr01   2016 32.50000
+## 7   ruthba01   1935 32.45455
+## 8   sosasa01   2007 32.05263
+## 9  cabremi01   2016 31.85714
+## 10 belleal01   2000 31.75000
+## 11 rodrial01   2016 31.63636
+## 12 schmimi01   1989 30.44444
+## 13 abreujo02   2016 30.33333</code></pre>
+</div>
+<div id="joins" class="section level2">
+<h2>Joins</h2>
+<p>Joins are called joins because you combine the data in two separate tables. This makes query’s much more user freindly. For example here is a list of the full team names for where Barry Bonds played,</p>
+<pre class="r"><code>query5&lt;-&quot;SELECT playerID,Batting.yearID,name,Batting.HR
+FROM Batting INNER JOIN Teams
+ON Batting.teamID=Teams.teamID and Batting.yearID=Teams.yearID
+WHERE playerID='ruthba01'&quot;
+
+sqldf(query5)</code></pre>
+<pre><code>##    playerID yearID             name HR
+## 1  ruthba01   1914   Boston Red Sox  0
+## 2  ruthba01   1915   Boston Red Sox  4
+## 3  ruthba01   1916   Boston Red Sox  3
+## 4  ruthba01   1917   Boston Red Sox  2
+## 5  ruthba01   1918   Boston Red Sox 11
+## 6  ruthba01   1919   Boston Red Sox 29
+## 7  ruthba01   1920 New York Yankees 54
+## 8  ruthba01   1921 New York Yankees 59
+## 9  ruthba01   1922 New York Yankees 35
+## 10 ruthba01   1923 New York Yankees 41
+## 11 ruthba01   1924 New York Yankees 46
+## 12 ruthba01   1925 New York Yankees 25
+## 13 ruthba01   1926 New York Yankees 47
+## 14 ruthba01   1927 New York Yankees 60
+## 15 ruthba01   1928 New York Yankees 54
+## 16 ruthba01   1929 New York Yankees 46
+## 17 ruthba01   1930 New York Yankees 49
+## 18 ruthba01   1931 New York Yankees 46
+## 19 ruthba01   1932 New York Yankees 41
+## 20 ruthba01   1933 New York Yankees 34
+## 21 ruthba01   1934 New York Yankees 22
+## 22 ruthba01   1935    Boston Braves  6</code></pre>
+<p>Here’s another example of the full names of players that hit over fifty homeruns.</p>
+<pre class="r"><code>query6&lt;-&quot;SELECT nameFirst,nameLast,teamID,yearID,HR
+FROM Batting INNER JOIN Master
+ON Batting.playerID=Master.playerID
+WHERE HR&gt;50
+ORDER BY HR&quot;
+
+sqldf(query6)</code></pre>
+<pre><code>##    nameFirst  nameLast teamID yearID HR
+## 1      Ralph     Kiner    PIT   1947 51
+## 2     Johnny      Mize    NY1   1947 51
+## 3     Willie      Mays    NY1   1955 51
+## 4      Cecil   Fielder    DET   1990 51
+## 5     Andruw     Jones    ATL   2005 51
+## 6     Mickey    Mantle    NYA   1956 52
+## 7     Willie      Mays    SFN   1965 52
+## 8     George    Foster    CIN   1977 52
+## 9       Mark   McGwire    OAK   1996 52
+## 10      Alex Rodriguez    TEX   2001 52
+## 11       Jim     Thome    CLE   2002 52
+## 12     Chris     Davis    BAL   2013 53
+## 13      Babe      Ruth    NYA   1920 54
+## 14      Babe      Ruth    NYA   1928 54
+## 15     Ralph     Kiner    PIT   1949 54
+## 16    Mickey    Mantle    NYA   1961 54
+## 17     David     Ortiz    BOS   2006 54
+## 18      Alex Rodriguez    NYA   2007 54
+## 19      Jose  Bautista    TOR   2010 54
+## 20      Hack    Wilson    CHN   1930 56
+## 21       Ken   Griffey    SEA   1997 56
+## 22       Ken   Griffey    SEA   1998 56
+## 23      Luis  Gonzalez    ARI   2001 57
+## 24      Alex Rodriguez    TEX   2002 57
+## 25    Jimmie      Foxx    PHA   1932 58
+## 26      Hank Greenberg    DET   1938 58
+## 27      Ryan    Howard    PHI   2006 58
+## 28      Babe      Ruth    NYA   1921 59
+## 29      Babe      Ruth    NYA   1927 60
+## 30     Roger     Maris    NYA   1961 61
+## 31     Sammy      Sosa    CHN   1999 63
+## 32     Sammy      Sosa    CHN   2001 64
+## 33      Mark   McGwire    SLN   1999 65
+## 34     Sammy      Sosa    CHN   1998 66
+## 35      Mark   McGwire    SLN   1998 70
+## 36     Barry     Bonds    SFN   2001 73</code></pre>
 </div>
 
 

@@ -29,15 +29,66 @@ sqldf(query)
 ```
 Next we have Yankees with more than 40 home runs AND less and 60 strikeouts. A much more difficult feat. 
 ```{R}
-query<-"SELECT playerID,teamID,yearID,HR FROM Batting
+query1<-"SELECT playerID,teamID,yearID,HR FROM Batting
 WHERE teamID='NYA' and HR>40 and SO<60"
-sqldf(query)
+sqldf(query1)
 ```
 Finally we come to Phillies with more than 30 home runs throughout the entire 70's. 
 ```{R}
-query<-"SELECT playerID,teamID,yearID,HR FROM Batting
+query2<-"SELECT playerID,teamID,yearID,HR FROM Batting
 WHERE teamID='PHI' and HR>30 and yearID>1970 and yearID<1979"
-sqldf(query)
+sqldf(query2)
 ```
 
 Multiple pieces of data can always be linked with 'and'. Also don't forget to HIGHLIGHT WHAT YOU'RE RUNNING.
+
+## Order By
+
+The function, ORDER BY, can greatly refine oure query's, let's take a look.
+
+```{r}
+query3<-"SELECT playerID,yearID,HR 
+FROM Batting
+WHERE HR>50
+ORDER BY HR DESC"
+
+sqldf(query3)
+```
+
+
+## Aggregation
+
+Query's can be refined even further through aggregation. Sum's are added to the SELECT line and we introduce the GROUP BY function. 
+
+```{r}
+query4<-"SELECT playerID,yearID,avg(HR)FROM Batting
+GROUP BY playerID
+HAVING avg(HR)>30
+ORDER BY avg(HR) DESC"
+
+sqldf(query4)
+```
+
+## Joins 
+
+Joins are called joins because you combine the data in two separate tables. This makes query's much more user freindly. For example here is a list of the full team names for where Babe Ruth played,
+
+```{r}
+query5<-"SELECT playerID,Batting.yearID,name,Batting.HR
+FROM Batting INNER JOIN Teams
+ON Batting.teamID=Teams.teamID and Batting.yearID=Teams.yearID
+WHERE playerID='ruthba01'"
+
+sqldf(query5)
+```
+
+Here's another example of the full names of players that hit over fifty homeruns.
+
+```{r}
+query6<-"SELECT nameFirst,nameLast,teamID,yearID,HR
+FROM Batting INNER JOIN Master
+ON Batting.playerID=Master.playerID
+WHERE HR>50
+ORDER BY HR"
+
+sqldf(query6)
